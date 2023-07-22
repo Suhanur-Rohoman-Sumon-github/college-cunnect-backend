@@ -1,15 +1,16 @@
 const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const cors = require('cors')
 const port = process.env.PORT || 5000
 
 app.use(express.json())
 app.use(cors())
+require('dotenv').config()
 
 
 
-const uri = "mongodb+srv://college-cunnect:bh4p1gZknyfilimj@cluster0.eepi0pq.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.eepi0pq.mongodb.net/?retryWrites=true&w=majority`
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -27,6 +28,7 @@ async function run() {
         // Send a ping to confirm a successful connection
         const coleges = client.db('college-cunnect').collection('coleges')
         const images = client.db('college-cunnect').collection('images')
+        const revews = client.db('college-cunnect').collection('revews')
 
         app.get('/coleges',async(req,res)=>{
             const colege = await coleges.find().toArray()
@@ -35,6 +37,16 @@ async function run() {
         app.get('/images',async(req,res)=>{
             const image = await images.find().toArray()
             res.send(image)
+        })
+        app.get('/revews',async(req,res)=>{
+            const revew = await revews.find().toArray()
+            res.send(revew)
+        })
+        app.get('/coleges/:id',async(req,res)=>{
+            const id = req.params.id
+            const filter = {_id : new ObjectId(id)}
+            const singledtails = await coleges.findOne(filter)
+            res.send(singledtails)
         })
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
