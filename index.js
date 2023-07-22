@@ -26,9 +26,15 @@ async function run() {
         await client.connect();
         // Send a ping to confirm a successful connection
         const coleges = client.db('college-cunnect').collection('coleges')
+        const images = client.db('college-cunnect').collection('images')
+
         app.get('/coleges',async(req,res)=>{
             const colege = await coleges.find().toArray()
             res.send(colege)
+        })
+        app.get('/images',async(req,res)=>{
+            const image = await images.find().toArray()
+            res.send(image)
         })
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
