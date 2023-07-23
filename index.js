@@ -29,6 +29,7 @@ async function run() {
         const coleges = client.db('college-cunnect').collection('coleges')
         const images = client.db('college-cunnect').collection('images')
         const revews = client.db('college-cunnect').collection('revews')
+        const usersInformations = client.db('college-cunnect').collection('usersInformations')
 
         app.get('/coleges',async(req,res)=>{
             const colege = await coleges.find().toArray()
@@ -48,6 +49,16 @@ async function run() {
             const singledtails = await coleges.findOne(filter)
             res.send(singledtails)
         })
+         app.post('/usersInformations', async (req, res) => {
+            const users = req.body;
+            const query = { email: users.email };
+            const existingUser = await usersInformations.findOne(query);
+            if (existingUser) {
+                return res.send({ message: 'vai already added' });
+            }
+            const result = await usersInformations.insertOne(users);
+            res.send(result);
+        });
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
