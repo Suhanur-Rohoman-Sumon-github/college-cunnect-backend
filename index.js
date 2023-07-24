@@ -30,6 +30,7 @@ async function run() {
         const images = client.db('college-cunnect').collection('images')
         const revews = client.db('college-cunnect').collection('revews')
         const usersInformations = client.db('college-cunnect').collection('usersInformations')
+        const admitionData = client.db('college-cunnect').collection('admitionData')
 
         app.get('/coleges',async(req,res)=>{
             const colege = await coleges.find().toArray()
@@ -49,8 +50,15 @@ async function run() {
             const singledtails = await coleges.findOne(filter)
             res.send(singledtails)
         })
+        app.get('/admitonData',async(req,res)=>{
+            const email = req.query.email;
+            const query = { email: email };
+            const admitionDatas = await admitionData.find(query).toArray()
+            res.send(admitionDatas)
+        })
          app.post('/usersInformations', async (req, res) => {
             const users = req.body;
+            
             const query = { email: users.email };
             const existingUser = await usersInformations.findOne(query);
             if (existingUser) {
@@ -59,6 +67,12 @@ async function run() {
             const result = await usersInformations.insertOne(users);
             res.send(result);
         });
+
+        app.post('/admitonData',async(req,res)=>{
+            const admitonData = req.body
+            const result = await admitionData.insertOne(admitonData)
+            res.send(result)
+        })
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
