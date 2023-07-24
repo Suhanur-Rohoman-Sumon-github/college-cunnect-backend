@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         // Send a ping to confirm a successful connection
         const coleges = client.db('college-cunnect').collection('coleges')
         const images = client.db('college-cunnect').collection('images')
@@ -55,6 +55,13 @@ async function run() {
             const query = { email: email };
             const admitionDatas = await admitionData.find(query).toArray()
             res.send(admitionDatas)
+        })
+        app.get('/usersInformations',async(req,res)=>{
+            const email = req.query.email;
+            
+            const query = { email: email };
+            const userInformations = await usersInformations.find(query).toArray()
+            res.send(userInformations)
         })
          app.post('/usersInformations', async (req, res) => {
             const users = req.body;
